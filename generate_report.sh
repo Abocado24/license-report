@@ -89,7 +89,7 @@ get_debian_info() {
 
     PACKAGE_TYPE="Debian"
 
-    PACKAGE_VERSION=$(dpkg -l "$package" | awk 'NR>5 {print $3}')
+    PACKAGE_VERSION=$(dpkg -l "$package" | awk 'END {print $3}')
 
     PACKAGE_SRC_URL=$(apt-cache show "$package"="$PACKAGE_VERSION" |
         grep 'Homepage:' | awk '{print $2}')
@@ -166,7 +166,7 @@ print_packages(){
 
     if [ -n "$DEBIAN" ]; then
         local debian_pkgs=
-        debian_pkgs=$(dpkg --get-selections | cut -f1 -d':' | awk '{print $1}')
+        debian_pkgs=$(dpkg --get-selections | cut -f1 -d':' | awk '{print $1}' | sort -u)
 
         for package in $debian_pkgs; do
             get_debian_info "$package"
